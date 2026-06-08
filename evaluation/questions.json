@@ -1,0 +1,26 @@
+[
+  {
+    "question": "What should I do if a VPN user cannot authenticate after password reset?",
+    "ground_truth": "Check MFA sync, AD password propagation, VPN logs, and escalate to IAM if unresolved.",
+    "expected_sources": [
+      "vpn_troubleshooting_runbook.md",
+      "incident_001_vpn_auth_failure.md"
+    ]
+  },
+  {
+    "question": "How do I handle an Airflow DAG failure caused by schema drift?",
+    "ground_truth": "Check schema changes, validate dbt model, run data quality checks, and backfill the DAG.",
+    "expected_sources": [
+      "airflow_failure_runbook.md",
+      "incident_002_airflow_dag_failure.md"
+    ]
+  },
+  {
+    "question": "What should I do if PostgreSQL connection pools are saturated and requests are timing out?",
+    "ground_truth": "Confirm database reachability, review active connections, reduce connection pressure, and tune pool limits before escalating to the DBA team.",
+    "expected_sources": [
+      "postgres_connection_pooling_runbook.md",
+      "incident_005_database_connection_timeout.md"
+    ]
+  }
+]

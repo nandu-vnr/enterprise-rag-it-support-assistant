@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python -m py_compile src/support/\\*\\.py src/schemas/answer_schema\\.py src/main\\.py ui/app\\.py evaluation/run_eval\\.py tests/unit/test_support_schema\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

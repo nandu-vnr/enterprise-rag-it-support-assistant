@@ -1,0 +1,18 @@
+[
+  {
+    "ticket_id": "INC-1001",
+    "title": "VPN authentication failure",
+    "priority": "P2",
+    "description": "Users are unable to authenticate into VPN after password reset.",
+    "category": "Access Management",
+    "expected_answer": "Check MFA sync, AD password propagation, VPN auth logs, and escalate to IAM if issue persists."
+  },
+  {
+    "ticket_id": "INC-1002",
+    "title": "Airflow DAG failed after schema change",
+    "priority": "P1",
+    "description": "Daily ETL pipeline failed after a new nullable column was added to the source table.",
+    "category": "Data Engineering",
+    "expected_answer": "Validate schema drift, update dbt model, rerun Great Expectations checks, and trigger Airflow backfill."
+  }
+]
