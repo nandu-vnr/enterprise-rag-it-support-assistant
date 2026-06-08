@@ -8,7 +8,11 @@ from tests.integration.utils import wait_for_task_status
 
 class TestTask:
     @pytest.fixture
-    def create_task(self, test_client: TestClient) -> Callable[[], str]:
+    def create_task(
+        self,
+        test_client: TestClient,
+        sitemap_server: str,
+    ) -> Callable[[], str]:
         """Helper fixture to create a task."""
 
         def _create_task() -> str:
@@ -19,14 +23,14 @@ class TestTask:
                     "description": "Test source for task",
                     "connector": {
                         "type": "sitemap",
-                        "sitemap_url": "https://docs.example.com/sitemap.xml",
-                        "include_pattern": "https://docs.example.com/getting-started",
+                        "sitemap_url": f"{sitemap_server}/sitemap.xml",
+                        "include_pattern": f"{sitemap_server}/getting-started",
                     },
                 },
             )
             task_id = response.json()["task_id"]
             wait_for_task_status(test_client, task_id, "SUCCESS")
-            return response.json()["task_id"]
+            return task_id
 
         return _create_task
 

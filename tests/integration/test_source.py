@@ -7,15 +7,15 @@ from tests.integration.utils import wait_for_task_status
 
 class TestSource:
     @pytest.fixture
-    def source_data(self) -> dict[str, Any]:
+    def source_data(self, sitemap_server: str) -> dict[str, Any]:
         """Fixture to generate source with unique name."""
         return {
             "name": f"test-source-{time.time_ns()}",
             "description": "Test source description",
             "connector": {
                 "type": "sitemap",
-                "sitemap_url": "https://docs.example.com/sitemap.xml",
-                "include_pattern": "https://docs.example.com/getting-started",
+                "sitemap_url": f"{sitemap_server}/sitemap.xml",
+                "include_pattern": f"{sitemap_server}/getting-started",
             },
         }
 
@@ -116,7 +116,10 @@ class TestSource:
         assert any(s["name"] == source_data["name"] for s in sources)
 
     def test_update_source(
-        self, test_client: TestClient, source_data: dict[str, Any]
+        self,
+        test_client: TestClient,
+        source_data: dict[str, Any],
+        sitemap_server: str,
     ) -> None:
         """Test updating a source."""
         # Create initial source
@@ -130,7 +133,7 @@ class TestSource:
             "sync": True,
             "connector": {
                 "type": "sitemap",
-                "sitemap_url": "https://docs.example.com/sitemap.xml",
+                "sitemap_url": f"{sitemap_server}/sitemap.xml",
             },
         }
         response = test_client.put(f"/sources/{source_data['name']}", json=update_data)

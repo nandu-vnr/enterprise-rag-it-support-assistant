@@ -1,4 +1,7 @@
 import os
+import socketserver
+import threading
+from http.server import BaseHTTPRequestHandler
 from typing import Any, Generator
 from unittest.mock import Mock
 import pytest
@@ -129,6 +132,49 @@ def celery_config(test_settings: Settings) -> dict[str, Any]:
 def celery_app_fixture(celery_config: dict[str, Any]) -> Celery:
     celery_app.conf.update(celery_config)
     return celery_app
+
+
+class _LocalSitemapHandler(BaseHTTPRequestHandler):
+    def do_GET(self) -> None:
+        port = self.server.server_address[1]
+        if self.path == "/sitemap.xml":
+            self.send_response(200)
+            self.send_header("Content-Type", "application/xml")
+            self.end_headers()
+            self.wfile.write(
+                f"<?xml version='1.0' encoding='UTF-8'?><urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><url><loc>http://127.0.0.1:{port}/getting-started</loc></url></urlset>".encode()
+            )
+        elif self.path == "/robots.txt":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"User-agent: *\nAllow: /\n")
+        elif self.path == "/getting-started":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html")
+            self.end_headers()
+            self.wfile.write(
+                b"<html><head><title>Getting Started</title></head><body><main><h1>Getting Started</h1><p>Test content</p></main></body></html>"
+            )
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def log_message(self, format: str, *args: object) -> None:
+        return
+
+
+@pytest.fixture(scope="session")
+def sitemap_server() -> Generator[str, None, None]:
+    with socketserver.TCPServer(("127.0.0.1", 0), _LocalSitemapHandler) as httpd:
+        port = httpd.server_address[1]
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        try:
+            yield f"http://127.0.0.1:{port}"
+        finally:
+            httpd.shutdown()
+            thread.join(timeout=5)
 
 
 @pytest.fixture

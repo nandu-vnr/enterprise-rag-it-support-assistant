@@ -1,6 +1,6 @@
 from unittest.mock import call
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any
 from pytest_mock import MockerFixture
 
@@ -213,8 +213,8 @@ async def test_fetch_issues_with_issue_age_limit(
     _, kwargs = call_args
     params = kwargs.get("params", {})
     assert "since" in params
-    # Verify the since parameter is a date 30 days ago
-    cutoff_date = datetime.now() - timedelta(days=30)
+    # Verify the since parameter is a date 30 days ago in UTC
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=30)
     assert params["since"] == cutoff_date.strftime("%Y-%m-%d")
 
 

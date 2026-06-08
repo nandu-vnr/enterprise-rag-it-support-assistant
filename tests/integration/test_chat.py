@@ -7,7 +7,11 @@ from tests.integration.utils import wait_for_task_status
 
 class TestChat:
     @pytest.fixture
-    def create_source(self, test_client: TestClient) -> Callable[[str], dict[str, Any]]:
+    def create_source(
+        self,
+        test_client: TestClient,
+        sitemap_server: str,
+    ) -> Callable[[str], dict[str, Any]]:
         """Create a test source and wait for sync completion."""
 
         def _create_source(name: str) -> dict[str, Any]:
@@ -18,8 +22,8 @@ class TestChat:
                     "description": "Test source for chat",
                     "connector": {
                         "type": "sitemap",
-                        "sitemap_url": "https://docs.example.com/sitemap.xml",
-                        "include_pattern": "https://docs.example.com/getting-started",
+                        "sitemap_url": f"{sitemap_server}/sitemap.xml",
+                        "include_pattern": f"{sitemap_server}/getting-started",
                     },
                 },
             )
