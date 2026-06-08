@@ -13,7 +13,7 @@ Enterprise RAG IT Support Assistant ingests technical runbooks and incident docu
 
 ## Architecture
 
-![Architecture](assets/architecture.png)
+![Architecture](01_high_level_system_architecture.svg)
 
 The assistant flow:
 - Streamlit UI / FastAPI request
